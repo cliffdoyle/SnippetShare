@@ -8,7 +8,7 @@ import (
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(`hello from SnippetShare`))
 }
-
+//This handle will handle the viewing of snippets
 func snipview(w http.ResponseWriter, r *http.Request){
 	w.Write([]byte("Display a specific code snippet"))
 }

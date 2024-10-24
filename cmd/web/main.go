@@ -4,10 +4,15 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 )
 func main() {
 	addr:=flag.String("addr",":4000","HTTP network address")
 	flag.Parse()
+
+	infoLog:=log.New(os.Stdout,"INFO\t",log.Ldate|log.Ltime)
+	errorLog:=log.New(os.Stderr,"ERROR\t",log.Ldate|log.Ltime|log.Ltime|log.Lshortfile)
+
 
 	mux := http.NewServeMux()
 	fileServer:=http.FileServer(http.Dir("./ui/static/"))
@@ -17,7 +22,7 @@ func main() {
 	mux.HandleFunc("/snippet/createsnip", createsnip)
 	// fmt.Println(`Hello world`)
 
-	log.Printf("starting server on %s",*addr)
+	infoLog.Printf("starting server on %s",*addr)
 	err:=http.ListenAndServe(*addr,mux)
-	log.Fatal(err)
+	errorLog.Fatal(err)
 }

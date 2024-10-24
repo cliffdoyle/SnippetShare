@@ -1,10 +1,11 @@
 package main
 
-
 import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"text/template"
+	"log"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -12,7 +13,21 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w,r)
 		return
 	}
-	w.Write([]byte(`hello from SnippetShare`))
+
+	ts,err:=template.ParseFiles("./ui/html/pages/home.html")
+	if err !=nil{
+		log.Print(err.Error())
+		http.Error(w,"Internal Server Error",http.StatusInternalServerError)
+		return
+	}
+
+	err=ts.Execute(w,nil)
+	if err !=nil{
+		log.Print(err.Error())
+		http.Error(w,"internal Server Error",http.StatusInternalServerError)
+	}
+
+
 }
 //This handler will handle the viewing of snippets
 func snipview(w http.ResponseWriter, r *http.Request){

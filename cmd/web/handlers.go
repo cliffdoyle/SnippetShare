@@ -5,10 +5,9 @@ import (
 	"net/http"
 	"strconv"
 	"text/template"
-	"log"
 )
 
-func home(w http.ResponseWriter, r *http.Request) {
+func (app *application)home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path !="/"{
 		http.NotFound(w,r)
 		return
@@ -22,14 +21,14 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 	ts,err:=template.ParseFiles(files...)
 	if err !=nil{
-		log.Print(err.Error())
+		app.errorLog.Print(err.Error())
 		http.Error(w,"Internal Server Error",http.StatusInternalServerError)
 		return
 	}
 
 	err=ts.ExecuteTemplate(w,"base",nil)
 	if err !=nil{
-		log.Print(err.Error())
+		app.errorLog.Print(err.Error())
 		http.Error(w,"internal Server Error",http.StatusInternalServerError)
 	}
 
@@ -38,7 +37,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 }
 //This handler will handle the viewing of snippets
-func snipview(w http.ResponseWriter, r *http.Request){
+func (app *application)snipview(w http.ResponseWriter, r *http.Request){
 	id,err:=strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 0{
 		http.NotFound(w,r)
@@ -47,7 +46,7 @@ func snipview(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(w,"Display a specific code snippet with ID %d..",id)
 }
 
-func createsnip(w http.ResponseWriter, r *http.Request){
+func (app *application)createsnip(w http.ResponseWriter, r *http.Request){
 	if r.Method !=http.MethodPost{
 		w.Header().Add("Allow","POST")
 		// w.WriteHeader(405)

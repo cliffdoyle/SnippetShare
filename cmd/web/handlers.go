@@ -1,7 +1,8 @@
 package main
 
+
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -20,7 +21,7 @@ func snipview(w http.ResponseWriter, r *http.Request){
 		http.NotFound(w,r)
 		return
 	}
-	w.Write([]byte("Display a specific code snippet"))
+	fmt.Fprintf(w,"Display a specific code snippet with ID %d..",id)
 }
 
 func createsnip(w http.ResponseWriter, r *http.Request){
@@ -34,14 +35,4 @@ func createsnip(w http.ResponseWriter, r *http.Request){
 	w.Write([]byte("Create a new code snippet"))
 }
 
-func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/snippet/snipview", snipview)
-	mux.HandleFunc("/snippet/createsnip", createsnip)
-	// fmt.Println(`Hello world`)
 
-	log.Print("starting server on :4040")
-	err:=http.ListenAndServe(":4040",mux)
-	log.Fatal(err)
-}

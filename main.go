@@ -1,8 +1,9 @@
 package main
 
 import (
-	"net/http"
 	"log"
+	"net/http"
+	"strconv"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -14,15 +15,20 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 //This handler will handle the viewing of snippets
 func snipview(w http.ResponseWriter, r *http.Request){
+	id,err:=strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil || id < 0{
+		http.NotFound(w,r)
+		return
+	}
 	w.Write([]byte("Display a specific code snippet"))
 }
 
 func createsnip(w http.ResponseWriter, r *http.Request){
 	if r.Method !=http.MethodPost{
-		w.Header().Set("Allow","POST")
+		w.Header().Add("Allow","POST")
 		// w.WriteHeader(405)
 		// w.Write([]byte("Method not Allowed"))
-		http.Error(w,"Method Not Allowed",http.StatusMethodNotAllowed)
+		http.Error(w,"Methodos Not Allowed",http.StatusMethodNotAllowed)
 		return
 	}
 	w.Write([]byte("Create a new code snippet"))

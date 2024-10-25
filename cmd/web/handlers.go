@@ -9,7 +9,7 @@ import (
 
 func (app *application)home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path !="/"{
-		http.NotFound(w,r)
+		app.NotFound(w)
 		return
 	}
 
@@ -22,14 +22,14 @@ func (app *application)home(w http.ResponseWriter, r *http.Request) {
 	ts,err:=template.ParseFiles(files...)
 	if err !=nil{
 		app.errorLog.Print(err.Error())
-		http.Error(w,"Internal Server Error",http.StatusInternalServerError)
+		app.serverError(w,err)
 		return
 	}
 
 	err=ts.ExecuteTemplate(w,"base",nil)
 	if err !=nil{
-		app.errorLog.Print(err.Error())
-		http.Error(w,"internal Server Error",http.StatusInternalServerError)
+		// app.errorLog.Print(err.Error())
+		app.serverError(w,err)
 	}
 
 	// fmt.Fprintln(w,"Hello fellow coders")
@@ -40,8 +40,7 @@ func (app *application)home(w http.ResponseWriter, r *http.Request) {
 func (app *application)snipview(w http.ResponseWriter, r *http.Request){
 	id,err:=strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 0{
-		http.NotFound(w,r)
-		return
+		app.NotFound(w)
 	}
 	fmt.Fprintf(w,"Display a specific code snippet with ID %d..",id)
 }
@@ -51,7 +50,7 @@ func (app *application)createsnip(w http.ResponseWriter, r *http.Request){
 		w.Header().Add("Allow","POST")
 		// w.WriteHeader(405)
 		// w.Write([]byte("Method not Allowed"))
-		http.Error(w,"Methodos Not Allowed",http.StatusMethodNotAllowed)
+		app.clientError(w,http.StatusMethodNotAllowed)
 		return
 	}
 	w.Write([]byte("Create a new code snippet"))

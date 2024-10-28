@@ -42,7 +42,7 @@ func (app *application)snipview(w http.ResponseWriter, r *http.Request){
 	if err != nil || id < 0{
 		app.NotFound(w)
 	}
-	fmt.Fprintf(w,"Display a specific code snippet with ID %d..",id)
+	fmt.Fprintf(w,"Display a specific code snippet with ID %d..\n",id)
 }
 
 func (app *application)createsnip(w http.ResponseWriter, r *http.Request){
@@ -53,7 +53,21 @@ func (app *application)createsnip(w http.ResponseWriter, r *http.Request){
 		app.clientError(w,http.StatusMethodNotAllowed)
 		return
 	}
-	w.Write([]byte("Create a new code snippet"))
+
+	title:="O snail"
+	content:= `O snail\n|Climb Mount Fuji,\nBut slowly, slowly!\n\n–
+Kobayashi Issa`
+	expires:=7
+
+	id,err:=app.snippets.Insert(title,content,expires)
+	if err !=nil{
+		app.serverError(w,err)
+		return
+	}
+	http.Redirect(w,r,fmt.Sprintf("/snippet/snipview?id=%d",id),http.StatusSeeOther)
+
+
+	// w.Write([]byte("Create a new code snippet"))
 }
 
 

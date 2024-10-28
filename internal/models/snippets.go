@@ -19,10 +19,10 @@ type SnippetModel struct{
 }
 //Inserts a new snippet into the database
 func (m *SnippetModel)Insert(title,content string, expires int)(int,error){
-	stm:=`INSERT INTO snippets(title,content,created,expires)
-	Values(?,?, UTC_TIMESTAMP(),DATE_ADD(UTC_TIMESTAMP(),INTERNAL?DAY))`
+	stmt := `INSERT INTO snippets (title, content, created, expires)
+VALUES(?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY))`
 	
-	result,err:=m.DB.Exec(stm,title,content,expires)
+	result,err:=m.DB.Exec(stmt,title,content,expires)
 	if err !=nil{
 		return 0,err
 	}

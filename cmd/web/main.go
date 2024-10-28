@@ -5,11 +5,15 @@ import (
 	"log"
 	"net/http"
 	"os"
-)
 
+	"github.com/cliffdoyle/SnippetShare.git/internal/models"
+)
+//Added snippets field to make the snippetmodel object 
+//available to the handlers
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	snippets *models.SnippetModel
 }
 
 func main() {
@@ -29,9 +33,12 @@ func main() {
 		errorLog.Fatal(err)
 	}
 	defer db.Close()
+	//Initialize a models.SnippetModel instance and add
+	//it to the application dependencies
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
+		snippets: &models.SnippetModel{DB: db},
 	}
 
 	// fmt.Println(`Hello world`)

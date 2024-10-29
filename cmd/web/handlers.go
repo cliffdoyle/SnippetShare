@@ -1,10 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
-	"text/template"
+
+	"github.com/cliffdoyle/SnippetShare.git/internal/models"
 )
 
 func (app *application)home(w http.ResponseWriter, r *http.Request) {
@@ -13,36 +15,55 @@ func (app *application)home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files:=[]string{
-		"./ui/html/base.html",
-		"./ui/html/partials/nav.html",
-		"./ui/html/pages/home.html",
-	}
-
-	ts,err:=template.ParseFiles(files...)
+	snippets,err:=app.snippets.Latest()
 	if err !=nil{
-		app.errorLog.Print(err.Error())
 		app.serverError(w,err)
 		return
 	}
 
-	err=ts.ExecuteTemplate(w,"base",nil)
-	if err !=nil{
-		// app.errorLog.Print(err.Error())
-		app.serverError(w,err)
+	for _,snippet:=range snippets{
+		fmt.Fprintf(w,"%+v\n",snippet)
+	}
+
+	// files:=[]string{
+	// 	"./ui/html/base.html",
+	// 	"./ui/html/partials/nav.html",
+	// 	"./ui/html/pages/home.html",
+	// }
+
+	// ts,err:=template.ParseFiles(files...)
+	// if err !=nil{
+	// 	app.errorLog.Print(err.Error())
+	// 	app.serverError(w,err)
+	// 	return
+	// }
+
+	// err=ts.ExecuteTemplate(w,"base",nil)
+	// if err !=nil{
+	// 	// app.errorLog.Print(err.Error())
+	// 	app.serverError(w,err)
 	}
 
 	// fmt.Fprintln(w,"Hello fellow coders")
 
 
-}
+
 //This handler will handle the viewing of snippets
 func (app *application)snipview(w http.ResponseWriter, r *http.Request){
 	id,err:=strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 0{
 		app.NotFound(w)
 	}
-	fmt.Fprintf(w,"Display a specific code snippet with ID %d..\n",id)
+	snippet,err:=app.snippets.Get(id)
+	if err != nil{
+		if errors.Is(err,models.ErrNoRecord){
+			app.NotFound(w)
+		}else{
+			app.serverError(w,err)
+		}
+		return
+	}
+	fmt.Fprintf(w,"%+v",snippet)
 }
 
 func (app *application)createsnip(w http.ResponseWriter, r *http.Request){
@@ -65,7 +86,6 @@ Kobayashi Issa`
 		return
 	}
 	http.Redirect(w,r,fmt.Sprintf("/snippet/snipview?id=%d",id),http.StatusSeeOther)
-
 
 	// w.Write([]byte("Create a new code snippet"))
 }

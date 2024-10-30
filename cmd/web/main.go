@@ -2,18 +2,21 @@ package main
 
 import (
 	"flag"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/cliffdoyle/SnippetShare.git/internal/models"
 )
-//Added snippets field to make the snippetmodel object 
+
+//Added snippets field to make the snippetmodel object
 //available to the handlers
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
 	snippets *models.SnippetModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -33,12 +36,19 @@ func main() {
 		errorLog.Fatal(err)
 	}
 	defer db.Close()
+
+	//Initialize a new template cahe...
+	templateCache,err:=newTemplateCache()
+	if err !=nil{
+		errorLog.Fatal(err)
+	}
 	//Initialize a models.SnippetModel instance and add
 	//it to the application dependencies
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
 		snippets: &models.SnippetModel{DB: db},
+		templateCache: templateCache,
 	}
 
 	// fmt.Println(`Hello world`)

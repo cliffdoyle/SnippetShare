@@ -22,9 +22,10 @@ func (app *application)home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// for _,snippet:=range snippets{
-	// 	fmt.Fprintf(w,"%+v\n",snippet)
-	// }
+	//Use the new render helper
+	app.render(w,http.StatusOK,"home.tmpl",&templateData{
+		Snippets: snippets,
+	})
 
 	files:=[]string{
 		"./ui/html/base.html",
@@ -68,6 +69,13 @@ func (app *application)snipview(w http.ResponseWriter, r *http.Request){
 		}
 		return
 	}
+
+	
+	//Use the new render helper
+	app.render(w,http.StatusOK,"view.html",&templateData{
+		Snippet: snippet,
+	})
+
 	files:=[]string{
 		"./ui/html/base.html",
 		"./ui/html/partials/nav.html",

@@ -22,9 +22,9 @@ func (app *application)home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _,snippet:=range snippets{
-		fmt.Fprintf(w,"%+v\n",snippet)
-	}
+	// for _,snippet:=range snippets{
+	// 	fmt.Fprintf(w,"%+v\n",snippet)
+	// }
 
 	files:=[]string{
 		"./ui/html/base.html",
@@ -34,7 +34,7 @@ func (app *application)home(w http.ResponseWriter, r *http.Request) {
 
 	ts,err:=template.ParseFiles(files...)
 	if err !=nil{
-		app.errorLog.Print(err.Error())
+		// app.errorLog.Print(err.Error())
 		app.serverError(w,err)
 		return
 	}

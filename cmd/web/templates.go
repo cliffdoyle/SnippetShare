@@ -41,7 +41,7 @@ func newTemplateCache()(map[string]*template.Template,error){
 		cache[name]=ts
 	}
 
-	fmt.Println(cache)
+	// fmt.Println(cache)
 
 return cache,nil
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"path/filepath"
 
@@ -19,10 +20,11 @@ func newTemplateCache()(map[string]*template.Template,error){
 
 	//Use filepath.Glob() to get a slice of all filepaths that match pattern
 
-	pages,err:=filepath.Glob("./ui/html/pages/*.tmpl")
+	pages,err:=filepath.Glob("./ui/html/pages/*.html")
 	if err !=nil{
 		return nil,err
 	}
+
 	for _,page:=range pages{
 		name:=filepath.Base(page)
 
@@ -38,6 +40,8 @@ func newTemplateCache()(map[string]*template.Template,error){
 		}
 		cache[name]=ts
 	}
+
+	fmt.Println(cache)
 
 return cache,nil
 

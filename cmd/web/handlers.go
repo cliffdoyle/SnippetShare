@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -23,31 +22,31 @@ func (app *application)home(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Use the new render helper
-	app.render(w,http.StatusOK,"home.tmpl",&templateData{
+	app.render(w,http.StatusOK,"home.html",&templateData{
 		Snippets: snippets,
 	})
 
-	files:=[]string{
-		"./ui/html/base.html",
-		"./ui/html/partials/nav.html",
-		"./ui/html/pages/home.html",
-	}
+	// files:=[]string{
+	// 	"./ui/html/base.html",
+	// 	"./ui/html/partials/nav.html",
+	// 	"./ui/html/pages/home.html",
+	// }
 
-	ts,err:=template.ParseFiles(files...)
-	if err !=nil{
-		// app.errorLog.Print(err.Error())
-		app.serverError(w,err)
-		return
-	}
-	data:=&templateData{
-		Snippets:snippets,
-	}
+	// ts,err:=template.ParseFiles(files...)
+	// if err !=nil{
+	// 	// app.errorLog.Print(err.Error())
+	// 	app.serverError(w,err)
+	// 	return
+	// }
+	// data:=&templateData{
+	// 	Snippets:snippets,
+	// }
 
-	err=ts.ExecuteTemplate(w,"base",data)
-	if err !=nil{
-		// app.errorLog.Print(err.Error())
-		app.serverError(w,err)
-	}
+	// err=ts.ExecuteTemplate(w,"base",data)
+	// if err !=nil{
+	// 	// app.errorLog.Print(err.Error())
+	// 	app.serverError(w,err)
+	// }
 
 	// fmt.Fprintln(w,"Hello fellow coders")
 }
@@ -76,27 +75,27 @@ func (app *application)snipview(w http.ResponseWriter, r *http.Request){
 		Snippet: snippet,
 	})
 
-	files:=[]string{
-		"./ui/html/base.html",
-		"./ui/html/partials/nav.html",
-		"./ui/html/pages/view.html",
-	}
+	// files:=[]string{
+	// 	"./ui/html/base.html",
+	// 	"./ui/html/partials/nav.html",
+	// 	"./ui/html/pages/view.html",
+	// }
 
 
-	data:=&templateData{
-		Snippet: snippet,
-	}
+	// data:=&templateData{
+	// 	Snippet: snippet,
+	// }
 
-	ts,err:=template.ParseFiles(files...)
-	if err !=nil{
-		app.serverError(w,err)
-		return
-	}
+	// ts,err:=template.ParseFiles(files...)
+	// if err !=nil{
+	// 	app.serverError(w,err)
+	// 	return
+	// }
 
-	err=ts.ExecuteTemplate(w,"base",data)
-	if err !=nil{
-		app.serverError(w,err)
-	}
+	// err=ts.ExecuteTemplate(w,"base",data)
+	// if err !=nil{
+	// 	app.serverError(w,err)
+	// }
 
 
 	// fmt.Fprintf(w,"%+v",snippet)
